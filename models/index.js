@@ -1,8 +1,14 @@
 const Sequelize = require('sequelize');
-const db = new Sequelize('postgres://localhost:5432/wikistack');
+const db = new Sequelize('postgres://localhost:5432/wikistack', {
+  logging: false
+});
 db.authenticate().then(() => {
   console.log('connected to the database');
 });
+
+function slugify(str) {
+  return str.replace(/\s+/g, '_').replace(/\W/g, '');
+}
 
 const Page = db.define('page', {
   title: {
@@ -20,7 +26,13 @@ const Page = db.define('page', {
   status: {
     type: Sequelize.ENUM('open', 'closed'),
   },
+  
 });
+
+Page.beforeValidate(async function(page) {
+  page.slug = slugify(page.title);
+  return Sequelize.Promise.resolve(page);
+})
 
 const User = db.define('user', {
   name: {
