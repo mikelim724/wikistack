@@ -4,8 +4,8 @@ const app = express();
 const layout = require('./views/layout');
 const models = require('./models');
 
-app.use(morgan('dev'));
-app.use(express.static('./public'));
+app.use(morgan('dev')); //check all req being made with routes
+app.use(express.static('./public')); //
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/wiki', require('./routes/wiki'))

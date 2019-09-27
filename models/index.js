@@ -1,16 +1,16 @@
 const Sequelize = require('sequelize');
 const db = new Sequelize('postgres://localhost:5432/wikistack', {
-  logging: false
+  logging: false //dont print all the complicated stuff
 });
-db.authenticate().then(() => {
+db.authenticate().then(() => {  //make sure connected to db
   console.log('connected to the database');
 });
 
-function slugify(str) {
+function slugify(str) { //turn inputed title into a slug title
   return str.replace(/\s+/g, '_').replace(/\W/g, '');
 }
 
-const Page = db.define('page', {
+const Page = db.define('page', { //make a table called Page named page
   title: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -29,12 +29,12 @@ const Page = db.define('page', {
   
 });
 
-Page.beforeValidate(async function(page) {
+Page.beforeValidate(async function(page) { //before each page table is made, input a slug value first
   page.slug = slugify(page.title);
   return Sequelize.Promise.resolve(page);
 })
 
-const User = db.define('user', {
+const User = db.define('user', { //make a users table called user. Has a name and email column.
   name: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -48,7 +48,7 @@ const User = db.define('user', {
   },
 });
 
-Page.belongsTo(User, { as: 'author' });
+Page.belongsTo(User, { as: 'author' }); //Plants a foreign id into page that relates it to user called authorId
 
 module.exports = {
   db,
